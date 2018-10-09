@@ -1,8 +1,12 @@
 # Build Folders
 out/
+build/
 
-# Vendor packages
+# Vendor Packages
 node_modules/
+
+# testing
+/coverage
 
 # OS Specific
 .DS_Store
