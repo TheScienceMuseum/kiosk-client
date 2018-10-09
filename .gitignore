@@ -1,0 +1,11 @@
+# Build Folders
+out/
+
+# Vendor packages
+node_modules/
+
+# OS Specific
+.DS_Store
+
+# IDE Specific
+.idea/
