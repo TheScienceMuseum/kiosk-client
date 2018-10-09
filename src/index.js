@@ -31,11 +31,13 @@ const onApplicationStart = () => {
 
   mainWindow = new BrowserWindow(windowOptions);
 
-  mainWindow.loadURL(
-    (applicationDevMode) ?
-      'http://localhost:3000' :
-      `file://${__dirname}/index.html`,
-  );
+  // mainWindow.loadURL(
+  //   (applicationDevMode) ?
+  //     'http://localhost:3000' :
+  //     `file://${__dirname}/index.html`,
+  // );
+
+  mainWindow.loadURL('http://localhost:3000');
 
   if (applicationDevMode) {
     mainWindow.webContents.openDevTools({

@@ -7,8 +7,8 @@
   "main": "src/index.js",
   "scripts": {
     "start": "yarn start-ui & yarn start-app",
-    "start-ui": "cd src/ui && SKIP_PREFLIGHT_CHECK=true ./node_modules/.bin/react-scripts start",
-    "start-app": "APPLICATION_ENV=dev electron-forge start",
+    "start-ui": "cd src/ui && BROWSER=none SKIP_PREFLIGHT_CHECK=true ./node_modules/.bin/react-scripts start",
+    "start-app": "APPLICATION_ENV=prod electron-forge start",
     "package": "electron-forge package",
     "test": "cd src/ui && react-scripts test",
     "make": "cd src/ui && react-scripts build && cd ../../ && electron-forge make",
@@ -53,6 +53,7 @@
   },
   "dependencies": {
     "electron-compile": "^6.4.3",
+    "electron-config": "^1.0.0",
     "electron-squirrel-startup": "^1.0.0"
   },
   "devDependencies": {
