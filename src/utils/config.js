@@ -8,8 +8,8 @@ class Config {
 
     this.config.set('client_version', app.getVersion());
     this.config.set('package_storage_directory', `${app.getPath('userData')}/packages/`);
-    this.config.set('environment', process.env.APPLICATION_ENV ? process.env.APPLICATION_ENV : 'production');
 
+    if (!this.config.get('environment')) this.config.set('environment', process.env.APPLICATION_ENV ? process.env.APPLICATION_ENV : 'production');
     if (!this.config.get('identifier')) this.config.set('identifier', hri.random());
     if (!this.config.get('current_package_name')) this.config.set('current_package_name', null);
     if (!this.config.get('current_package_version')) this.config.set('current_package_version', null);

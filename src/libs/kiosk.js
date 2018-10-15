@@ -34,9 +34,7 @@ class Kiosk {
         this.healthCheck();
         this.updateDisplayedPackage();
       },
-      10000,
-      // this.config.get('environment') === 'dev' ? 10000 : (5 * 60000),
-      // <minutes> * <milliseconds multiplier>
+      this.config.get('environment') === 'dev' ? 10000 : (5 * 60000), // <minutes> * <milliseconds multiplier>
     );
   }
   healthCheck() {
