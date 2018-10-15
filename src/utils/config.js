@@ -16,14 +16,13 @@ class Config {
 
     switch (this.config.get('environment')) {
       case 'dev':
-        // this.config.set('identifier', 'test-kiosk-one');
         this.config.set('package_server_api', 'http://kiosk-manager.test/api/');
         break;
       case 'staging':
-        this.config.set('package_server_api', 'http://kiosk-manager.test/api/');
+        this.config.set('package_server_api', 'http://ec2-18-191-78-6.us-east-2.compute.amazonaws.com/api/');
         break;
       default:
-        this.config.set('package_server_api', 'http://kiosk-manager.test/api/');
+        this.config.set('package_server_api', 'http://ec2-18-191-78-6.us-east-2.compute.amazonaws.com/api/');
         break;
     }
   }
