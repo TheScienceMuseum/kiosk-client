@@ -5,6 +5,32 @@
     <title>KIOSK CLIENT</title>
   </head>
   <body>
-    Welcome to the app!
+  <div>There is no current package loaded to this kiosk.</div>
+  <div>
+    <strong>Kiosk Name:</strong>
+    <span id="kiosk_identifier"></span>
+  </div>
+  <div>
+    <strong>Kiosk Config:</strong>
+    <span id="kiosk_config"></span>
+  </div>
+  <div>
+    <span id="kiosk_lock"></span>
+    <button onclick="toggleKioskLocked()">Toggle Kiosk Lock</button>
+  </div>
+  <script>
+    const config = require('electron').remote.require(__dirname + '/utils/config.js');
+    const Config = config.Config;
+
+    document.getElementById('kiosk_identifier').innerText = Config.get('identifier');
+    document.getElementById('kiosk_config').innerText = JSON.stringify(Config.store);
+
+    document.getElementById('kiosk_lock').innerText = `Kiosk is currently ${Config.get('screen_unattended') ? 'unlocked' : 'locked'} for updates`;
+
+    function toggleKioskLocked() {
+      Config.set('screen_unattended', ! Config.get('screen_unattended'));
+      document.getElementById('kiosk_lock').innerText = `Kiosk is currently ${Config.get('screen_unattended') ? 'unlocked' : 'locked'} for updates`;
+    }
+  </script>
   </body>
 </html>

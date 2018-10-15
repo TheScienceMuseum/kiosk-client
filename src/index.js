@@ -1,66 +1,39 @@
-import { app, BrowserWindow } from 'electron';
+import { app, globalShortcut } from 'electron';
+import { addBypassChecker } from 'electron-compile';
 import updateIsRunning from 'electron-squirrel-startup';
+import { Kiosk } from './libs/kiosk';
 
 if (updateIsRunning) {
   app.quit();
 }
 
-let mainWindow;
-const applicationDevMode = process.env.APPLICATION_ENV && process.env.APPLICATION_ENV === 'dev';
+// bypass checking if files that are being loaded are allow to be loaded (pre-compile)
+addBypassChecker(() => true);
 
 const onApplicationStart = () => {
-  const windowOptions = {
-    resizable: false,
-    movable: false,
-    minimizable: false,
-    closable: false,
-    alwaysOnTop: true,
-    fullscreen: true,
-  };
+  // fs.dir(config.get('package_storage_directory'), {
+  //   empty: false,
+  // });
 
-  if (applicationDevMode) {
-    windowOptions.width = 1920 / 2;
-    windowOptions.height = 1200 / 2;
-    windowOptions.resizable = true;
-    windowOptions.movable = true;
-    windowOptions.minimizable = true;
-    windowOptions.closable = true;
-    windowOptions.alwaysOnTop = false;
-    windowOptions.fullscreen = false;
-  }
+  const kiosk = new Kiosk();
 
-  mainWindow = new BrowserWindow(windowOptions);
+  kiosk.start();
 
-  // mainWindow.loadURL(
-  //   (applicationDevMode) ?
-  //     'http://localhost:3000' :
-  //     `file://${__dirname}/index.html`,
-  // );
-
-  mainWindow.loadURL('http://localhost:3000');
-
-  if (applicationDevMode) {
-    mainWindow.webContents.openDevTools({
-      detach: true,
-    });
-  }
-
-  mainWindow.on('closed', () => {
-    mainWindow = null;
+  globalShortcut.register('CommandOrControl+D', () => {
+    // console.log('showing application debug menu');
   });
 };
 
 app.on('ready', onApplicationStart);
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
-});
-
-app.on('activate', () => {
-  if (mainWindow === null) {
-    onApplicationStart();
-  }
-});
-
+// app.on('window-all-closed', () => {
+//   if (process.platform !== 'darwin') {
+//     app.quit();
+//   }
+// });
+//
+// app.on('activate', () => {
+//   if (mainWindow === null) {
+//     onApplicationStart();
+//   }
+// });

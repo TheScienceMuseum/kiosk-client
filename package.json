@@ -3,18 +3,16 @@
   "productName": "kiosk-v4",
   "version": "1.0.0",
   "private": true,
-  "description": "My Electron application description",
+  "description": "Kiosk Client Application",
   "main": "src/index.js",
   "scripts": {
     "start": "yarn start-ui & yarn start-app",
     "start-ui": "cd src/ui && BROWSER=none SKIP_PREFLIGHT_CHECK=true ./node_modules/.bin/react-scripts start",
-    "start-app": "APPLICATION_ENV=prod electron-forge start",
+    "start-app": "APPLICATION_ENV=dev electron-forge start",
     "package": "electron-forge package",
-    "test": "cd src/ui && react-scripts test",
-    "make": "cd src/ui && react-scripts build && cd ../../ && electron-forge make",
+    "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint src --color",
-    "postinstall": "cd src/ui && yarn install"
+    "lint": "eslint src --color"
   },
   "keywords": [],
   "author": "lawrence",
@@ -52,9 +50,17 @@
     }
   },
   "dependencies": {
+    "axios": "^0.18.0",
+    "electron": "^3.0.4",
     "electron-compile": "^6.4.3",
     "electron-config": "^1.0.0",
-    "electron-squirrel-startup": "^1.0.0"
+    "electron-squirrel-startup": "^1.0.0",
+    "fs-jetpack": "^2.1.1",
+    "human-readable-ids": "^1.0.4",
+    "internet-available": "^1.0.0",
+    "lodash": "^4.17.11",
+    "tar": "^4.4.6",
+    "winston": "^3.1.0"
   },
   "devDependencies": {
     "babel-plugin-transform-async-to-generator": "^6.24.1",
