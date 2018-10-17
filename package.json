@@ -1,14 +1,12 @@
 {
-  "name": "kiosk-v4",
-  "productName": "kiosk-v4",
+  "name": "kiosk-client",
+  "productName": "kiosk-client",
   "version": "1.0.0",
   "private": true,
   "description": "Kiosk Client Application",
   "main": "src/index.js",
   "scripts": {
-    "start": "yarn start-ui & yarn start-app",
-    "start-ui": "cd src/ui && BROWSER=none SKIP_PREFLIGHT_CHECK=true ./node_modules/.bin/react-scripts start",
-    "start-app": "APPLICATION_ENV=dev electron-forge start",
+    "start": "APPLICATION_ENV=dev electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
@@ -35,18 +33,10 @@
         "packageManager": "yarn"
       },
       "electronWinstallerConfig": {
-        "name": "kiosk_v4"
+        "name": "kiosk-client"
       },
       "electronInstallerDebian": {},
-      "electronInstallerRedhat": {},
-      "github_repository": {
-        "owner": "",
-        "name": ""
-      },
-      "windowsStoreConfig": {
-        "packageName": "",
-        "name": "kioskv4"
-      }
+      "electronInstallerRedhat": {}
     }
   },
   "dependencies": {
