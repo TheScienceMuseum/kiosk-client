@@ -4,10 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Kiosk Client</title>
+  <title>Kiosk Debug Menu</title>
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
+
+  <link rel="stylesheet" href="bootstrap.min.css">
 
   <!-- Styles -->
   <style>
@@ -44,16 +46,7 @@
       top: 18px;
     }
 
-    .content {
-      text-align: center;
-    }
-
-    .title {
-      font-size: 64px;
-      text-transform: uppercase;
-    }
-
-    .links > div {
+    .links > a {
       color: #636b6f;
       padding: 0 25px;
       font-size: 12px;
@@ -63,36 +56,57 @@
       text-transform: uppercase;
     }
 
-    .m-b-md {
-      margin-bottom: 30px;
+    #logs {
+      top: 60px;
+      left: 15px;
+      right: 15px;
+      bottom: 30px;
+      position: absolute;
+      overflow-y: scroll;
+      overflow-x: hidden;
     }
   </style>
 </head>
 <body>
 <div class="flex-center position-ref full-height">
-
   <div class="top-right links">
-
+    <a id="kiosk_identifier"></a>
+    <!--<a href="#">View Logs</a>-->
+    <!--<a href="#">Manage Package</a>-->
   </div>
 
-  <div class="content">
-    <div class="title m-b-md">
-      <span id="kiosk_identifier"></span>
-    </div>
-
-    <div class="links">
-      <div>
-        This kiosk is currently not registered, please provide the above identifier to the kiosk administrators.
-      </div>
-    </div>
+  <div id="logs">
+    <table class="table table-striped">
+      <tbody id="logs_body"></tbody>
+    </table>
   </div>
 </div>
 <script>
   const config = require('electron').remote.require(__dirname + '/utils/config.js');
   const Config = config.Config;
   Config.set('screen_unattended', true);
-
   document.getElementById('kiosk_identifier').innerText = Config.get('identifier');
+
+  const Tail = require('tail').Tail;
+  tail = new Tail(Config.get('logs_debug'));
+
+  tail.on("line", function(data) {
+    data = JSON.parse(data);
+    let line = document.createElement('tr');
+
+    let timestamp = document.createElement('td');
+    timestamp.innerText = data.timestamp;
+    line.appendChild(timestamp);
+
+    let message = document.createElement('td');
+    message.innerText = data.message;
+    line.appendChild(message);
+
+    document.getElementById('logs_body').appendChild(line);
+
+    let logs = document.getElementById('logs');
+    logs.scrollTop = logs.scrollHeight;
+  });
 </script>
 </body>
 </html>

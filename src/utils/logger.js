@@ -10,7 +10,8 @@ class Logger {
       new transports.File({ filename: `${app.getPath('userData')}/debug.log`, level: 'debug' }),
     ];
 
-    if (Config.get('environment') === 'dev') loggingTransports.push(new transports.Console());
+    // if (Config.get('environment') === 'development')
+      loggingTransports.push(new transports.Console());
 
     this.log = winston.createLogger({
       level: 'debug',

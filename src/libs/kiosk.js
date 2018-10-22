@@ -26,25 +26,24 @@ class Kiosk {
       this.config.get('current_package_version'),
     );
 
-    this.healthCheck();
-    this.updateDisplayedPackage();
+    this.healthCheck()
+      .then(this.updateDisplayedPackage.bind(this));
 
     setInterval(
       () => {
-        this.healthCheck();
-        this.updateDisplayedPackage();
+        this.healthCheck()
+          .then(this.updateDisplayedPackage.bind(this));
       },
-      this.config.get('environment') === 'dev' ? 10000 : (5 * 60000), // <minutes> * <milliseconds multiplier>
+      this.config.get('health_check_timeout'),
     );
   }
   healthCheck() {
-    this.http.sendRequest('health-check', {
+    return this.http.sendRequest('health-check', {
       package: {
         name: this.package.manifest.name,
         version: this.package.manifest.version,
       },
     }).then((response) => {
-
       if (response.data.data.package === null) {
         this.log.debug('no package listed against this kiosk on the server');
       } else {
