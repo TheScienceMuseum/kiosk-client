@@ -2,7 +2,11 @@ image: node:10.12
 pipelines:
   default:
   - step:
+      name: build application
       caches:
       - node
       script:
       - yarn install
+      - yarn make
+      artifacts:
+        - out/make/*.zip
