@@ -31,7 +31,9 @@
       },
       "electronPackagerConfig": {
         "packageManager": "yarn",
-        "ignore": ["\\.idea"]
+        "ignore": [
+          "\\.idea"
+        ]
       },
       "electronWinstallerConfig": {
         "name": "kiosk-client"
@@ -41,6 +43,7 @@
     }
   },
   "dependencies": {
+    "auto-launch": "^5.0.5",
     "axios": "^0.18.0",
     "bootstrap": "^4.1.3",
     "electron": "^3.0.4",

@@ -2,6 +2,7 @@ import fs from 'fs';
 import { app, globalShortcut } from 'electron';
 import { addBypassChecker } from 'electron-compile';
 import updateIsRunning from 'electron-squirrel-startup';
+import AutoLaunch from 'auto-launch';
 import { Kiosk } from './libs/kiosk';
 import { Window } from './utils/window';
 import Logger from './utils/logger';
@@ -14,6 +15,22 @@ if (updateIsRunning) {
 addBypassChecker(() => true);
 
 const onApplicationStart = () => {
+  const kioskAppLauncher = new AutoLaunch({
+    name: 'Kiosk Client',
+    path: app.getPath('exe'),
+  });
+
+  kioskAppLauncher.isEnabled()
+    .then((isEnabled) => {
+      if (isEnabled) {
+        return;
+      }
+      kioskAppLauncher.enable();
+    })
+    .catch((error) => {
+      // handle error
+    });
+
   let debugOpen = false;
   const kiosk = new Kiosk();
 
