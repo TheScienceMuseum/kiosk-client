@@ -6,6 +6,7 @@ pipelines:
       caches:
       - node
       script:
+      - apt-get update && apt-get install -yq fakeroot
       - yarn install
       - yarn make
       artifacts:
