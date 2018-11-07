@@ -37,10 +37,16 @@ class PackageManager {
     return null;
   }
   getPackageByNameAndVersion(name, version) {
-    return _.find(
+    const foundPackage = _.find(
       this.packages,
       packageObject => packageObject.name === name && packageObject.version === version,
     );
+
+    if (!foundPackage) {
+      Logger.error(`Could not find the package ${name} at version ${version}`);
+    }
+
+    return foundPackage;
   }
   deletePackageByNameAndVersion(name, version) {
     const index = _.findIndex(
