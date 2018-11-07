@@ -10,6 +10,11 @@ node_modules/
 
 # OS Specific
 .DS_Store
+Thumbs.db
 
 # IDE Specific
 .idea/
+
+# Build environment
+.vagrant/
+*.log
