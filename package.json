@@ -1,7 +1,7 @@
 {
   "name": "kiosk-client",
   "productName": "kiosk-client",
-  "version": "1.0.1-0",
+  "version": "1.0.1-1",
   "private": true,
   "description": "Kiosk Client Application",
   "main": "src/index.js",
