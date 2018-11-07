@@ -38,6 +38,11 @@ class Network {
       client: {
         version: Config.get('client_version'),
       },
+      running_package: {
+        name: Config.get('current_package_name'),
+        version: Config.get('current_package_version'),
+        is_override: Config.get('package_overridden'),
+      },
     }, data);
 
     if (type === 'health-check') {

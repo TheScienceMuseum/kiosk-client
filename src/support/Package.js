@@ -5,7 +5,7 @@ import { Config, Network } from '.';
 class Package {
   constructor(name, version) {
     this.name = name;
-    this.version = version;
+    this.version = parseInt(version, 10);
   }
   static loadFromFolder(folder) {
     const manifestPath = `${folder}/manifest.json`;

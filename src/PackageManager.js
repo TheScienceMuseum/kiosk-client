@@ -19,7 +19,7 @@ class PackageManager {
     }).forEach((folder) => {
       const foundPackage = Package.loadFromFolder(folder);
 
-      this.packages.push(foundPackage);
+      if (foundPackage) this.packages.push(foundPackage);
     });
   }
   getCurrentPackage() {
@@ -37,21 +37,25 @@ class PackageManager {
     return null;
   }
   getPackageByNameAndVersion(name, version) {
+    const parsedVersion = parseInt(version, 10);
+
     const foundPackage = _.find(
       this.packages,
-      packageObject => packageObject.name === name && packageObject.version === version,
+      packageObject => packageObject.name === name && packageObject.version === parsedVersion,
     );
 
     if (!foundPackage) {
-      Logger.error(`Could not find the package ${name} at version ${version}`);
+      Logger.error(`Could not find the package ${name} at version ${parsedVersion}`);
     }
 
     return foundPackage;
   }
   deletePackageByNameAndVersion(name, version) {
+    const parsedVersion = parseInt(version, 10);
+
     const index = _.findIndex(
       this.packages,
-      packageObject => packageObject.name === name && packageObject.version === version,
+      packageObject => packageObject.name === name && packageObject.version === parsedVersion,
     );
 
     if (index) {
@@ -78,7 +82,7 @@ class PackageManager {
   getNewPackageFromFilepath(filepath) {
     Logger.info(`Copying a new package from local path: ${filepath}`);
 
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       const filename = path.parse(filepath);
       const destFile = `${Config.get('package_storage_directory')}/${filename.base}`;
 
@@ -88,9 +92,21 @@ class PackageManager {
       const packageData = filename.name.split('_');
       const newPackage = new Package(packageData[0], packageData[1]);
       newPackage.extract();
+
       if (!this.getPackageByNameAndVersion(packageData[0], packageData[1])) {
         this.packages.push(newPackage);
       }
+
+      if (!this.getPackageByNameAndVersion(packageData[0], packageData[1])) {
+        if (fs.exists(newPackage.getPackageArchivePath())) {
+          fs.remove(newPackage.getPackageArchivePath());
+        }
+        if (fs.exists(newPackage.getPackageFolderPath())) {
+          fs.remove(newPackage.getPackageFolderPath());
+        }
+        reject();
+      }
+
       resolve();
     });
   }

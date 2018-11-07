@@ -99,6 +99,7 @@
     $('#logs').collapse('hide');
     $('#package_manager').collapse('show');
     $('#packages_list tr').remove();
+
     packageManager.packages.forEach((entry) => {
       $('#packages_list').append(templates.package_list_row_template({
         entry: entry,
@@ -148,7 +149,10 @@
           onManagePackage();
         })
         .catch((error) => {
-          electron.remote.dialog.showErrorBox('Error Loading From File', error)
+          electron.remote.dialog.showErrorBox(
+            'Error Loading From File',
+            `We could not load the package file from ${packageFile}`
+          )
         });
     }
   };
