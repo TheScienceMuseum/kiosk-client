@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Kiosk Client</title>
+
+  <link rel="stylesheet" href="../styles/bootstrap.min.css">
+  <link rel="stylesheet" href="../styles/main.css">
+
+</head>
+<body>
+<div class="flex-center position-ref full-height">
+  <div class="content">
+    <div class="title m-b-md">
+      <span id="kiosk_identifier"></span>
+    </div>
+
+    <div class="links">
+      <div>
+        This kiosk is currently not registered, please use the above identifier to register this kiosk.
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const config = require('electron').remote.require(__dirname + '/../support/Config');
+  const Config = (new config.Config).getConfig();
+  Config.set('screen_unattended', true);
+
+  document.getElementById('kiosk_identifier').innerText = Config.get('identifier');
+</script>
+</body>
+</html>

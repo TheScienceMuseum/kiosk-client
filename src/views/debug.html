@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Kiosk Debug Menu</title>
+
+  <link rel="stylesheet" href="../styles/bootstrap.min.css">
+  <link rel="stylesheet" href="../styles/main.css">
+  <link rel="stylesheet" href="../styles/debug.css">
+</head>
+<body>
+<div class="flex-center position-ref full-height">
+  <div class="top-left links">
+    <div class="btn-group btn-group-toggle">
+      <button type="button" class="btn btn-outline-dark text-uppercase kiosk_identifier" disabled>[Kiosk ID]</button>
+    </div>
+  </div>
+
+  <div class="top-right links">
+    <div class="btn-group btn-group-toggle">
+      <button type="button" class="btn btn-outline-dark" onclick="onShowLogs()">Logs</button>
+      <button type="button" class="btn btn-outline-dark" onclick="onManagePackage()">Packages</button>
+    </div>
+  </div>
+
+  <div id="main">
+    <div id="logs" class="collapse">
+      <table class="table table-striped m-0 w-100">
+        <tbody id="logs_body">
+
+        </tbody>
+      </table>
+    </div>
+    <div id="package_manager" class="collapse">
+      <div class="card w-75 mt-3 mx-auto">
+        <div class="card-header align-middle d-flex justify-content-between">
+          <span>Manage Packages</span>
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-outline-secondary" onclick="onLoadFromFileSystem()">Load From File</button>
+            <!--<button class="btn btn-outline-secondary">Reload From KMS</button>-->
+          </div>
+        </div>
+
+        <table class="table table-hover m-0">
+          <tbody id="packages_list">
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<template id="package_list_row_template">
+  <tr data-package="<%= entry.name %>@<%= entry.version %>">
+    <td class="align-middle">
+      ${(is_current) ? '<span class="text-success">&check;</span>' : ''}
+      ${entry.name}@${entry.version}
+    </td>
+    <td class="text-right">
+      <div class="btn-group btn-group-sm">
+        ${(! is_current) ? '<button type="button" class="btn btn-outline-info makePackageCurrent">Display</button>' : ''}
+        ${(! is_current) ? '<button type="button" class="btn btn-outline-danger deletePackage">Delete</button>' : ''}
+      </div>
+    </td>
+  </tr>
+</template>
+
+<script>
+  const electron = require('electron');
+  const $ = require('jquery');
+  const _ = require('lodash');
+  const ipc = require('electron').ipcRenderer;
+  require('popper.js');
+  require('bootstrap');
+
+  const templates = {
+    package_list_row_template: _.template($('#package_list_row_template').html()),
+  };
+
+  const support = electron.remote.require(__dirname + '/../support/index');
+  const PackageManager = electron.remote.require(__dirname + '/../PackageManager').PackageManager;
+  const packageManager = new PackageManager();
+
+  $('.kiosk_identifier').html(support.Config.get('identifier'));
+  $('#package_current').html(packageManager.getCurrentPackage() ? `${packageManager.getCurrentPackage().name}@${packageManager.getCurrentPackage().version}` : 'none');
+
+  const onShowLogs = () => {
+    $('#package_manager').collapse('hide');
+    $('#logs').collapse('show');
+    let logs = document.getElementById('main');
+    logs.scrollTop = logs.scrollHeight;
+  };
+
+
+  const onManagePackage = () => {
+    $('#logs').collapse('hide');
+    $('#package_manager').collapse('show');
+    $('#packages_list tr').remove();
+    packageManager.packages.forEach((entry) => {
+      $('#packages_list').append(templates.package_list_row_template({
+        entry: entry,
+        is_current: (
+          packageManager.getCurrentPackage() &&
+          entry.getPackageFullName() === packageManager.getCurrentPackage().getPackageFullName()
+        ),
+      }));
+    });
+
+    const makePackageCurrentButtons = $('.makePackageCurrent');
+    makePackageCurrentButtons.off('click');
+    makePackageCurrentButtons.on('click', (ev) => {
+      const packageData = $(ev.currentTarget).closest('tr').data('package').split('@');
+      packageManager.setNewPackage(packageData[0], parseInt(packageData[1]));
+
+      support.Config.set('package_overridden', true);
+
+      onManagePackage();
+      // refresh main window
+      ipc.send('refresh-main-window', {});
+    });
+
+    const deletePackageButtons = $('.deletePackage');
+    deletePackageButtons.off('click');
+    deletePackageButtons.on('click', (ev) => {
+      const packageData = $(ev.currentTarget).closest('tr').data('package').split('@');
+      packageManager.deletePackageByNameAndVersion(packageData[0], parseInt(packageData[1]));
+      onManagePackage();
+    });
+  };
+
+  const onLoadFromFileSystem = () => {
+    const packageFile = electron.remote.dialog.showOpenDialog(
+      electron.remote.getCurrentWindow(),
+      {
+        properties: ['openFile'],
+        filters: [
+          { name: 'Kiosk Package Files', extensions: ['package'] },
+        ],
+      }
+    );
+
+    if (packageFile) {
+      packageManager.getNewPackageFromFilepath(packageFile[0])
+        .then(() => {
+          onManagePackage();
+        })
+        .catch((error) => {
+          electron.remote.dialog.showErrorBox('Error Loading From File', error)
+        });
+    }
+  };
+
+  const tailLogs = () => {
+    const Tail = require('tail').Tail;
+    const tail = new Tail(support.Logger.getPaths().debug);
+    tail.on("line", appendLog);
+  };
+
+  const appendLog = (entry) => {
+    if (typeof entry === 'string') {
+      entry = JSON.parse(entry);
+    }
+
+    let line = document.createElement('tr');
+
+    let timestamp = document.createElement('td');
+    timestamp.innerText = entry.timestamp;
+    line.appendChild(timestamp);
+
+    let message = document.createElement('td');
+    message.innerText = entry.message;
+    line.appendChild(message);
+
+    document.getElementById('logs_body').appendChild(line);
+
+    let logs = document.getElementById('main');
+    logs.scrollTop = logs.scrollHeight;
+  };
+
+  onManagePackage();
+  tailLogs();
+</script>
+</body>
+</html>

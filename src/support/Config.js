@@ -19,7 +19,7 @@ class Config {
     switch (this.config.get('environment')) {
       case 'development':
         this.config.set('health_check_timeout', 10000);
-        this.config.set('package_server_api', 'https://kiosk-manager.test/api/');
+        this.config.set('package_server_api', 'http://kiosk-manager.test/api/');
         break;
       case 'staging':
         this.config.set('health_check_timeout', 10000);
@@ -36,4 +36,4 @@ class Config {
   }
 }
 
-module.exports.Config = (new Config()).getConfig();
+module.exports.Config = Config;

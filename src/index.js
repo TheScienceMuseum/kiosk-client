@@ -1,11 +1,9 @@
-import fs from 'fs';
 import { app, globalShortcut } from 'electron';
 import { addBypassChecker } from 'electron-compile';
 import updateIsRunning from 'electron-squirrel-startup';
 import AutoLaunch from 'auto-launch';
-import { Kiosk } from './libs/kiosk';
-import { Window } from './utils/window';
-import Logger from './utils/logger';
+import { Config } from './support';
+import { Kiosk } from './Kiosk';
 
 if (updateIsRunning) {
   app.quit();
@@ -14,7 +12,7 @@ if (updateIsRunning) {
 // bypass checking if files that are being loaded are allow to be loaded (pre-compile)
 addBypassChecker(() => true);
 
-const onApplicationStart = () => {
+const forceApplicationLaunchOnBoot = () => {
   const kioskAppLauncher = new AutoLaunch({
     name: 'Kiosk Client',
     path: app.getPath('exe'),
@@ -30,28 +28,19 @@ const onApplicationStart = () => {
     .catch((error) => {
       // handle error
     });
+};
 
-  let debugOpen = false;
+const onApplicationStart = () => {
   const kiosk = new Kiosk();
-
-  if (fs.existsSync(`${app.getPath('userData')}/debug.log`)) {
-    fs.unlinkSync(`${app.getPath('userData')}/debug.log`);
-    fs.writeFileSync(`${app.getPath('userData')}/debug.log`, '');
-  }
-
   kiosk.start();
 
   globalShortcut.register('CommandOrControl+D', () => {
-    if (!debugOpen) {
-      Logger.debug('loading debug screen');
-      const window = new Window(false);
-      window.changeCurrentDisplayPackage(`${__dirname}/debug.html`);
-      debugOpen = true;
-      window.mainWindow.on('close', () => {
-        debugOpen = false;
-      });
-    }
+    kiosk.displayDebugScreen();
   });
+
+  if (Config.get('environment') === 'production') {
+    forceApplicationLaunchOnBoot();
+  }
 };
 
 app.on('ready', onApplicationStart);
@@ -61,9 +50,3 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
-//
-// app.on('activate', () => {
-//   if (mainWindow === null) {
-//     onApplicationStart();
-//   }
-// });
