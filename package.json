@@ -10,6 +10,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
+    "build": "npm version prerelease && yarn make",
     "lint": "eslint src --color"
   },
   "keywords": [],
