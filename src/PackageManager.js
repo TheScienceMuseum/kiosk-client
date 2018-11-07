@@ -6,7 +6,9 @@ import { Config, Logger, Package } from './support';
 class PackageManager {
   constructor() {
     this.packages = [];
-
+    this.rebuildPackageCache();
+  }
+  rebuildPackageCache() {
     if (!fs.exists(Config.get('package_storage_directory'))) {
       fs.dir(Config.get('package_storage_directory'));
     }
@@ -23,9 +25,7 @@ class PackageManager {
     });
   }
   getCurrentPackage() {
-    if (this.packages.length === 0) {
-      return false;
-    }
+    this.rebuildPackageCache();
 
     const configuredName = Config.get('current_package_name');
     const configuredVersion = Config.get('current_package_version');
@@ -43,10 +43,6 @@ class PackageManager {
       this.packages,
       packageObject => packageObject.name === name && packageObject.version === parsedVersion,
     );
-
-    if (!foundPackage) {
-      Logger.error(`Could not find the package ${name} at version ${parsedVersion}`);
-    }
 
     return foundPackage;
   }
@@ -104,7 +100,9 @@ class PackageManager {
         if (fs.exists(newPackage.getPackageFolderPath())) {
           fs.remove(newPackage.getPackageFolderPath());
         }
-        reject();
+        const error_message = `Could not load ${packageData[0]}@${packageData[1]} when manually loading from ${filepath}`;
+        Logger.error(error_message);
+        reject(error_message);
       }
 
       resolve();

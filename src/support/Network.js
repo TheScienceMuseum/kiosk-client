@@ -11,8 +11,11 @@ class Network {
   healthCheck() {
     return this.sendRequest('health-check')
       .catch((error) => {
-        if (_.has(error, 'response.status') && _.get(error, 'response.status') === 404) {
-          this.register().then(this.healthCheck.bind(this));
+        if (_.has(error, 'response.status')) {
+          if (_.get(error, 'response.status') === 404) {
+            this.register()
+              .then(this.healthCheck.bind(this));
+          }
         }
       });
   }
@@ -41,7 +44,7 @@ class Network {
       running_package: {
         name: Config.get('current_package_name'),
         version: Config.get('current_package_version'),
-        is_override: Config.get('package_overridden'),
+        is_override: Config.get('package_overridden', false),
       },
     }, data);
 

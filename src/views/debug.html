@@ -151,7 +151,7 @@
         .catch((error) => {
           electron.remote.dialog.showErrorBox(
             'Error Loading From File',
-            `We could not load the package file from ${packageFile}`
+            error,
           )
         });
     }
