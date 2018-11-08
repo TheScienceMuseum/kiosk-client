@@ -5,13 +5,14 @@ import { Config, Logger, Package } from './support';
 
 class PackageManager {
   constructor() {
-    this.packages = [];
     this.rebuildPackageCache();
   }
   rebuildPackageCache() {
     if (!fs.exists(Config.get('package_storage_directory'))) {
       fs.dir(Config.get('package_storage_directory'));
     }
+
+    this.packages = [];
 
     fs.find(Config.get('package_storage_directory'), {
       directories: true,
