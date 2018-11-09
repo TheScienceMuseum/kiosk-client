@@ -8,8 +8,6 @@ class Logger {
     this.location_info = `${app.getPath('userData')}/info.log`;
     this.location_debug = `${app.getPath('userData')}/debug.log`;
 
-    console.log(this.location_error, this.location_debug);
-
     const loggingTransports = [
       new transports.File({ filename: this.location_error, level: 'error' }),
       new transports.File({ filename: this.location_info, level: 'info' }),

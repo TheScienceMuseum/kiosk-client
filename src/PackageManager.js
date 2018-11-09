@@ -115,8 +115,11 @@ class PackageManager {
 
       Config.set('current_package_name', name);
       Config.set('current_package_version', version);
+
+      return true;
     } else {
       Logger.error(`Failed setting package ${name} at version ${version}`);
+      return false;
     }
   }
 }

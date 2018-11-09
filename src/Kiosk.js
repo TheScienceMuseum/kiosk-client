@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { ipcMain } from 'electron';
-import { Config, Logger, Network, Window } from './support';
+import { Config, Logger, Network, Package, Window } from './support';
 import { PackageManager } from './PackageManager';
 
 class Kiosk {
@@ -8,8 +8,8 @@ class Kiosk {
     this.window = new Window('main');
     this.packageManager = new PackageManager();
 
-    this.showing_debug_screen = false;
-    this.running_healthcheck = false;
+    this.window_debug = null;
+    this.currently_displayed_package = this.packageManager.getCurrentPackage();
 
     Logger.info(`Kiosk started. API Endpoint: ${Config.get('package_server_api')}, Time between checks: ${(Config.get('health_check_timeout') / 60000)} minutes`);
   }
@@ -21,10 +21,10 @@ class Kiosk {
     this.displayDefault();
   }
   displayDefault() {
-    const currentPackage = this.packageManager.getCurrentPackage();
+    this.currently_displayed_package = this.packageManager.getCurrentPackage();
 
-    if (currentPackage) {
-      this.displayPackage(currentPackage);
+    if (this.currently_displayed_package) {
+      this.displayPackage(this.currently_displayed_package);
     } else {
       this.displayDefaultScreen();
     }
@@ -38,59 +38,85 @@ class Kiosk {
     this.window.update('./src/views/default.html');
   }
   displayDebugScreen() {
-    if (!this.showing_debug_screen) {
-      this.showing_debug_screen = true;
-
-      const debugWindow = new Window('debug', false);
-      debugWindow.update('./src/views/debug.html');
-
-      debugWindow.on('close', () => {
-        this.showing_debug_screen = false;
-        Logger.info('Debug screen closed');
-      });
-
-      // on package chosen
-      ipcMain.on('refresh-main-window', this.displayDefault.bind(this));
-
-      Logger.info('Debug screen opened');
+    if (this.window_debug) {
+      this.window_debug.show();
+      return;
     }
+
+    this.window_debug = new Window('debug', false);
+    this.window_debug.update('./src/views/debug.html');
+
+    this.window_debug.on('close', () => {
+      this.window_debug = null;
+      Logger.info('Debug screen closed');
+    });
+
+    // on package chosen
+    ipcMain.on('refresh-main-window', () => {
+      // Config.set('')
+      this.displayDefault();
+    });
+
+    Logger.info('Debug screen opened');
   }
   healthCheck() {
+    Logger.info('Kiosk Health Check Starting');
     Network.healthCheck()
       .then((response) => {
-        this.running_healthcheck = true;
+        const packageData = _.get(response, 'data.data.package');
+        Config.set('package_overridden', _.get(response, 'data.data.manually_set'));
 
-        if (!_.has(response, 'data.data.package')) {
-          this.running_healthcheck = false;
-          return;
+        if (
+          packageData !== null &&
+          _.has(packageData, 'name') &&
+          _.has(packageData, 'version') &&
+          _.has(packageData, 'path')
+        ) {
+          const newPackage = new Package(
+            _.get(packageData, 'name'),
+            _.get(packageData, 'version'),
+          );
+
+          const foundPackage = this.packageManager.getPackageByNameAndVersion(
+            newPackage.name,
+            newPackage.version,
+          );
+
+          if (foundPackage) {
+            this.updateDisplayedPackage(foundPackage);
+          } else {
+            newPackage.download(_.get(packageData, 'path'))
+              .then(() => {
+                this.updateDisplayedPackage(newPackage);
+              });
+          }
         }
-
-        const currentPackage = this.packageManager.getCurrentPackage();
-
-        const assignedPackageData = _.get(response, 'data.data.package');
-
-        if (assignedPackageData === null) {
-          return;
-        }
-
-        const assignedPackage = this.packageManager.getPackageByNameAndVersion(
-          assignedPackageData.name,
-          assignedPackageData.version,
-        );
-
-        if (!currentPackage && assignedPackage !== null) {
-          this.displayPackage(assignedPackage);
-          return;
-        }
-
-        // if (configuredName !== newPackage.name || configuredVersion !== newPackage.version) {
-        //   if (newPackageFound) {
-        //     this.displayPackage(newPackageFound);
-        //   } else {
-        //     this.packageManager.getNewPackage(newPackage.name, newPackage.version);
-        //   }
-        // }
       });
+  }
+  updateDisplayedPackage(newPackage) {
+    this.packageManager.rebuildPackageCache();
+    const currentPackage = this.packageManager.getCurrentPackage();
+    let canUpdate = true;
+
+    if (currentPackage && currentPackage.isTheSameAs(newPackage)) {
+      Logger.info('Display not updated: current package is up to date');
+      canUpdate = false;
+    }
+
+    if (canUpdate && !Config.get('screen_unattended')) {
+      Logger.info('Display not updated: kiosk in use');
+      canUpdate = false;
+    }
+
+    if (canUpdate && Config.get('package_overridden')) {
+      Logger.info(`Display not updated: kiosk has manually loaded package since ${Config.get('package_overridden')}`);
+      canUpdate = false;
+    }
+
+    if (canUpdate && this.packageManager.setNewPackage(newPackage.name, newPackage.version)) {
+      this.displayDefault();
+      Logger.info(`Display updated: loaded package ${newPackage.name} version ${newPackage.version}`);
+    }
   }
 }
 

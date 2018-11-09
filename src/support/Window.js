@@ -13,6 +13,9 @@ class Window {
   update(viewFile) {
     this.browserWindow.loadFile(viewFile);
   }
+  show() {
+    this.browserWindow.show();
+  }
   refresh() {
     this.browserWindow.refresh();
   }

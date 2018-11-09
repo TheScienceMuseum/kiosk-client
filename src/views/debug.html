@@ -116,10 +116,9 @@
       const packageData = $(ev.currentTarget).closest('tr').data('package').split('@');
       packageManager.setNewPackage(packageData[0], parseInt(packageData[1]));
 
-      support.Config.set('package_overridden', true);
+      support.Config.set('package_overridden', (Date.now() / 1000).toFixed(0));
 
       onManagePackage();
-      // refresh main window
       ipc.send('refresh-main-window', {});
     });
 

@@ -19,32 +19,16 @@ class Network {
         }
       });
   }
-  downloadFile(url, destination) {
-    return this.hasConnection()
-      .then(() => {
-        axios.request({
-          responseType: 'arraybuffer',
-          url,
-          method: 'get',
-        }).then((result) => {
-          fs.write(destination, result.data);
-        }).catch((error) => {
-          Logger.error(`failed to download file from ${url} due to error: ${error}`);
-        });
-      });
-  }
-  sendRequest(type, data = {}) {
-    const uri = `${Config.get('package_server_api')}kiosk/${type}`;
-
+  static buildRequestData(type, data = {}) {
     let requestData = _.extend({
       identifier: Config.get('identifier'),
-      client: {
-        version: Config.get('client_version'),
-      },
       running_package: {
         name: Config.get('current_package_name'),
         version: Config.get('current_package_version'),
-        is_override: Config.get('package_overridden', false),
+        manually_set: Config.get('package_overridden', null),
+      },
+      client: {
+        version: Config.get('client_version'),
       },
     }, data);
 
@@ -56,6 +40,27 @@ class Network {
         });
       }
     }
+
+    return requestData;
+  }
+  downloadFile(url, destination) {
+    return this.hasConnection()
+      .then(() => {
+        axios.request({
+          responseType: 'arraybuffer',
+          url,
+          method: 'post',
+          data: Network.buildRequestData(),
+        }).then((result) => {
+          fs.write(destination, result.data);
+        }).catch((error) => {
+          Logger.error(`failed to download file from ${url} due to error: ${error}`);
+        });
+      });
+  }
+  sendRequest(type, data = {}) {
+    const uri = `${Config.get('package_server_api')}kiosk/${type}`;
+    const requestData = Network.buildRequestData(type, data);
 
     Logger.debug(`sending request to ${uri} with body ${JSON.stringify(requestData)}`);
 
