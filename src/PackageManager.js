@@ -40,12 +40,10 @@ class PackageManager {
   getPackageByNameAndVersion(name, version) {
     const parsedVersion = parseInt(version, 10);
 
-    const foundPackage = _.find(
+    return _.find(
       this.packages,
       packageObject => packageObject.name === name && packageObject.version === parsedVersion,
     );
-
-    return foundPackage;
   }
   deletePackageByNameAndVersion(name, version) {
     const parsedVersion = parseInt(version, 10);
@@ -101,11 +99,10 @@ class PackageManager {
         if (fs.exists(newPackage.getPackageFolderPath())) {
           fs.remove(newPackage.getPackageFolderPath());
         }
-        const error_message = `Could not load ${packageData[0]}@${packageData[1]} when manually loading from ${filepath}`;
-        Logger.error(error_message);
-        reject(error_message);
+        const errorMessage = `Could not load ${packageData[0]}@${packageData[1]} when manually loading from ${filepath}`;
+        Logger.error(errorMessage);
+        reject(errorMessage);
       }
-
       resolve();
     });
   }
@@ -117,10 +114,9 @@ class PackageManager {
       Config.set('current_package_version', version);
 
       return true;
-    } else {
-      Logger.error(`Failed setting package ${name} at version ${version}`);
-      return false;
     }
+    Logger.error(`Failed setting package ${name} at version ${version}`);
+    return false;
   }
 }
 

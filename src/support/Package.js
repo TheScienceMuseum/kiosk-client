@@ -18,7 +18,7 @@ class Package {
     return false;
   }
   getPackageFolderPath() {
-    return `${Config.get('package_storage_directory')}/${this.getPackageFullName()}/`;
+    return `${Config.get('package_storage_directory')}${this.getPackageFullName()}/`;
   }
   getPackageManifestPath() {
     return `${this.getPackageFolderPath()}/manifest.json`;
@@ -45,15 +45,21 @@ class Package {
     tar.x({
       file: this.getPackageArchivePath(),
       cwd: this.getPackageFolderPath(),
+      sync: true,
     });
   }
   download(url) {
     Logger.info(`Downloading package from ${url} to ${this.getPackageArchivePath()}`);
 
-    return Network.downloadFile(url, this.getPackageArchivePath())
-      .then(() => {
-        this.extract();
-      });
+    return new Promise((resolve, reject) => {
+      Network.downloadFile(url, this.getPackageArchivePath())
+        .then(() => {
+          this.extract();
+          resolve();
+        }).catch((error) => {
+          reject(error);
+        });
+    });
   }
   isTheSameAs(secondPackage) {
     return this.name === secondPackage.name && this.version === secondPackage.version;
