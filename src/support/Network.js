@@ -85,10 +85,12 @@ class Network {
     }));
   }
   hasConnection() {
+    const apiDomain = Config.get('package_server_api').split('/')[2];
     return new Promise((resolve, reject) => {
       canConnect({
         timeout: 5000,
         retries: 5,
+        domainName: apiDomain,
       }).then(() => {
         resolve();
       }).catch((error) => {
