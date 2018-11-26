@@ -1,8 +1,10 @@
+import dns from 'dns';
 import _ from 'lodash';
 import fs from 'fs-jetpack';
 import axios from 'axios';
 import canConnect from 'internet-available';
 import { Config, Logger } from '.';
+
 
 class Network {
   register() {
@@ -85,12 +87,15 @@ class Network {
     }));
   }
   hasConnection() {
-    const apiDomain = Config.get('package_server_api').split('/')[2];
     return new Promise((resolve, reject) => {
+      const apiDomain = Config.get('package_server_api').split('/')[2];
+      const dnsServers = dns.getServers();
+
       canConnect({
         timeout: 5000,
         retries: 5,
         domainName: apiDomain,
+        host: dnsServers[0],
       }).then(() => {
         resolve();
       }).catch((error) => {
