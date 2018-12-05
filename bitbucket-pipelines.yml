@@ -18,7 +18,7 @@ definitions:
       - node
     script:
       - yarn install
-      - yarn dist:all:staging:mac
+      - yarn dist:staging:mac
     artifacts:
       - dist/*.zip
 
@@ -28,7 +28,7 @@ definitions:
       - node
     script:
       - yarn install
-      - yarn dist:all:staging:linux
+      - yarn dist:staging:linux
     artifacts:
       - dist/*.zip
 
@@ -38,7 +38,7 @@ definitions:
       - node
     script:
       - yarn install
-      - yarn dist:all:staging:windows
+      - yarn dist:staging:windows
     artifacts:
       - dist/*.zip
 
