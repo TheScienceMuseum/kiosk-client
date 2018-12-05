@@ -1,4 +1,4 @@
-image: node:11
+image: acodeninja/electron-builder:latest
 pipelines:
   branches:
     develop:
@@ -7,13 +7,8 @@ pipelines:
           caches:
           - node
           script:
-          - dpkg --add-architecture i386
-          - wget -nc https://dl.winehq.org/wine-builds/Release.key
-          - apt-key add Release.key
-          - apt-get update && apt-get install --no-install-recommends -y apt-transport-https && apt-get clean
-          - echo 'deb https://dl.winehq.org/wine-builds/debian/ stretch main' >> /etc/apt/sources.list
-          - apt-get update && apt-get install --no-install-recommends -y libopenjp2-tools winehq-stable && apt-get clean
+          - yarn install
+          - yarn dist:all:staging
           artifacts:
           - dist/kiosk-client-*-mac.zip
           - dist/kiosk-client Setup *.exe
-
