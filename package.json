@@ -6,8 +6,8 @@
     "dev": "yarn asset:update && electron-webpack dev",
     "compile": "yarn asset:update && electron-webpack",
     "dist": "yarn compile && electron-builder",
-    "dist:all:staging": "yarn compile && APP_BUILD_ENV=staging node set-package-environment && electron-builder -mwl",
-    "dist:all:production": "yarn compile && APP_BUILD_ENV=production node set-package-environment &&electron-builder -mwl",
+    "dist:all:staging": "yarn compile && APP_BUILD_ENV=staging node set-dist-environment && electron-builder -mwl",
+    "dist:all:production": "yarn compile && APP_BUILD_ENV=production node set-dist-environment &&electron-builder -mwl",
     "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null",
     "asset:update": "cp -r ./node_modules/bootstrap/dist/css/* ./static/assets/css/"
   },

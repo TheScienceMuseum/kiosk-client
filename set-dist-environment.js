@@ -10,8 +10,8 @@ try {
 
   const changes = replace.sync({
     files: 'dist/main/main.js',
-    from: 'this.config.set(\'environment\', \'development\')',
-    to: `this.config.set(\'environment\', \'${environment}\')`,
+    from: 'this.config.set("environment","development")',
+    to: `this.config.set("environment","${environment}")`,
   });
 
   console.log('Modified files:', changes.join(', '));
