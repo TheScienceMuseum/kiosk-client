@@ -8,7 +8,7 @@ pipelines:
           - node
           script:
           - yarn install
-          - yarn make
+          - yarn dist:all:staging
           artifacts:
           - dist/kiosk-client-*-mac.zip
           - dist/kiosk-client Setup *.exe
