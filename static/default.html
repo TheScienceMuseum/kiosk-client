@@ -6,9 +6,7 @@
 
     <title>Kiosk Client</title>
 
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/main.css">
-
+    <link rel="stylesheet" href="assets/default.css">
 </head>
 <body>
 <div class="flex-center position-ref full-height">
@@ -25,24 +23,6 @@
         </div>
     </div>
 </div>
-<script>
-    (function () {
-        const _ = require('lodash');
-        const electron = require('electron');
-        const ipc = electron.ipcRenderer;
-        let Config = {};
-
-        ipc.send('config', 'set', {screen_unattended: true});
-        ipc.send('config', 'get');
-
-        ipc.on('config', (event, type, payload) => {
-            if (type === 'update') {
-                Config = payload;
-            }
-
-            document.getElementById('kiosk_identifier').innerText = Config.identifier;
-        });
-    })();
-</script>
+<script src="assets/default.js"></script>
 </body>
 </html>

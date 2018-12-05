@@ -3,13 +3,13 @@
   "version": "0.4.0",
   "license": "MIT",
   "scripts": {
-    "dev": "yarn asset:update && electron-webpack dev",
-    "compile": "yarn asset:update && electron-webpack",
+    "dev": "yarn asset:build && electron-webpack dev",
+    "compile": "yarn asset:build && electron-webpack",
     "dist": "yarn compile && electron-builder",
     "dist:all:staging": "yarn compile && APP_BUILD_ENV=staging node set-dist-environment && electron-builder -mwl",
     "dist:all:production": "yarn compile && APP_BUILD_ENV=production node set-dist-environment &&electron-builder -mwl",
     "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null",
-    "asset:update": "cp -r ./node_modules/bootstrap/dist/css/* ./static/assets/css/"
+    "asset:build": "webpack --config webpack.assets.js"
   },
   "dependencies": {
     "auto-launch": "^5.0.5",
@@ -33,7 +33,10 @@
     "electron-compile": "^6.4.3",
     "electron-webpack": "^2.6.1",
     "html-loader": "^0.5.5",
+    "mini-css-extract-plugin": "^0.4.5",
+    "node-sass": "^4.10.0",
     "replace-in-file": "^3.4.2",
+    "sass-loader": "^7.1.0",
     "webpack": "^4.26.0"
   }
 }

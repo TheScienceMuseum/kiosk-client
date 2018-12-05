@@ -2,5 +2,5 @@
 dist/
 node_modules/
 thumbs.db
-static/assets/**/bootstrap*
+static/assets/*
 *.log
