@@ -84,7 +84,9 @@ class Window {
                 });
             }
 
-            event.sender.send('config', 'update', Config.store);
+            if (type === 'get') {
+                event.sender.send('config', 'update', Config.store);
+            }
         });
 
         return mainWindow;
