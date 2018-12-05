@@ -10,5 +10,4 @@ pipelines:
           - yarn install
           - yarn dist:all:staging
           artifacts:
-          - dist/kiosk-client-*-mac.zip
-          - dist/kiosk-client Setup *.exe
+          - dist/*.zip
