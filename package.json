@@ -1,76 +1,39 @@
 {
   "name": "kiosk-client",
-  "productName": "kiosk-client",
-  "version": "0.3.0",
-  "private": true,
-  "description": "Kiosk Client Application",
-  "main": "src/index.js",
-  "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "lint": "eslint src --color"
-  },
-  "keywords": [],
-  "author": "Joi Polloi",
+  "version": "0.4.0",
   "license": "MIT",
-  "config": {
-    "forge": {
-      "make_targets": {
-        "win32": [
-          "squirrel"
-        ],
-        "darwin": [
-          "zip"
-        ],
-        "linux": [
-          "deb",
-          "rpm"
-        ]
-      },
-      "electronPackagerConfig": {
-        "packageManager": "yarn",
-        "ignore": [
-          "\\.idea"
-        ]
-      },
-      "electronWinstallerConfig": {
-        "name": "kiosk-client"
-      },
-      "electronInstallerDebian": {},
-      "electronInstallerRedhat": {}
-    }
+  "scripts": {
+    "dev": "yarn asset:update && electron-webpack dev",
+    "compile": "yarn asset:update && electron-webpack",
+    "dist": "yarn compile && electron-builder",
+    "dist:all:staging": "yarn compile && APP_BUILD_ENV=staging node set-package-environment && electron-builder -mwl",
+    "dist:all:production": "yarn compile && APP_BUILD_ENV=production node set-package-environment &&electron-builder -mwl",
+    "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null",
+    "asset:update": "cp -r ./node_modules/bootstrap/dist/css/* ./static/assets/css/"
   },
   "dependencies": {
     "auto-launch": "^5.0.5",
     "axios": "^0.18.0",
     "bootstrap": "^4.1.3",
-    "electron": "^3.0.4",
-    "electron-compile": "^6.4.3",
-    "electron-config": "^1.0.0",
-    "electron-squirrel-startup": "^1.0.0",
+    "electron-config": "^2.0.0",
     "fs-jetpack": "^2.2.0",
     "human-readable-ids": "^1.0.4",
     "internet-available": "^1.0.0",
     "jquery": "^3.3.1",
-    "lodash": "^4.17.11",
-    "popper.js": "^1.14.4",
-    "safe-json-stringify": "^1.2.0",
-    "tail": "^2.0.0",
-    "tar": "^4.4.6",
+    "lodash": "latest",
+    "popper.js": "^1.14.6",
+    "source-map-support": "^0.5.9",
+    "tail": "^2.0.1",
+    "tar": "latest",
     "winston": "^3.1.0"
   },
   "devDependencies": {
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "electron-forge": "^5.2.2",
-    "electron-prebuilt-compile": "3.0.2",
-    "eslint": "^3",
-    "eslint-config-airbnb": "^15",
-    "eslint-plugin-import": "^2",
-    "eslint-plugin-jsx-a11y": "^5",
-    "eslint-plugin-react": "^7"
+    "electron": "3.0.10",
+    "electron-builder": "^20.36.2",
+    "electron-compile": "^6.4.3",
+    "electron-webpack": "^2.6.1",
+    "html-loader": "^0.5.5",
+    "replace-in-file": "^3.4.2",
+    "webpack": "^4.26.0"
   }
 }

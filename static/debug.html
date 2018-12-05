@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Kiosk Debug Menu</title>
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/debug.css">
+</head>
+<body>
+
+<main class="mt-3 px-3 h-100">
+    <nav>
+        <div class="nav nav-tabs text-uppercase" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-logs-tab" data-toggle="tab" href="#nav-home" role="tab"
+               aria-controls="nav-home" aria-selected="true">Logs</a>
+            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
+               aria-controls="nav-profile" aria-selected="false">Packages</a>
+            <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab"
+               aria-controls="nav-contact" aria-selected="false">Contact</a>
+        </div>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-logs-tab">
+            <table class="table table-borderless table-striped m-0">
+                <tbody id="logs-table"></tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+            <div class="d-flex justify-content-between p-3">
+                <p>Packages can be manually selected below, or loaded from the local filesystem.</p>
+                <button class="btn btn-outline-secondary btn-sm" id="onOpenPackageFile">
+                    Load Package File
+                </button>
+            </div>
+            <table class="table table-borderless table-striped m-0">
+                <tbody id="packages-table"></tbody>
+            </table>
+        </div>
+        <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">3</div>
+    </div>
+</main>
+
+<template id="package_list_row_template">
+    <tr data-package="<%= entry.name %>@<%= entry.version %>">
+        <td class="align-middle">
+            ${(is_current) ? '<span class="text-success">&check;</span>' : ''}
+            ${entry.name}@${entry.version}
+        </td>
+        <td class="text-right">
+            <div class="btn-group btn-group-sm">
+                ${(! is_current) ? '<button type="button" class="btn btn-outline-info makePackageCurrent">Display</button>' : ''}
+                ${(! is_current) ? '<button type="button" class="btn btn-outline-danger deletePackage">Delete</button>' : ''}
+            </div>
+        </td>
+    </tr>
+</template>
+
+<template id="log_tail_row_template">
+    <tr class="">
+        <td>
+            ${timestamp}
+        </td>
+        <td>
+            ${message}
+        </td>
+    </tr>
+</template>
+
+<script>
+    (function () {
+        const electron = require('electron');
+        const $ = require('jquery');
+        const _ = require('lodash');
+        require('popper.js');
+        require('bootstrap');
+
+        const ipc = electron.ipcRenderer;
+
+        const templates = {
+            package_list_row_template: _.template($('#package_list_row_template').html()),
+            log_tail_row_template: _.template($('#log_tail_row_template').html()),
+        };
+
+        ipc.on('log-entry', (event, entry) => {
+            if (typeof entry === 'string') {
+                entry = JSON.parse(entry);
+            }
+
+            const logs_table = $('#logs-table');
+
+            logs_table.append(templates.log_tail_row_template(entry));
+            logs_table.parent().parent().parent().scrollTop(logs_table.height());
+        });
+
+        ipc.on('application-error', (event, error) => {
+            electron.remote.dialog.showErrorBox(
+                'Application Error',
+                error,
+            )
+        });
+
+        ipc.on('packages-update', (event, packages, current_package) => {
+            const packages_table = $('#packages-table');
+
+            packages_table.children().remove();
+
+            packages_table.append(_.map(packages, (packageData) => templates.package_list_row_template({
+                entry: {
+                    name: packageData.name,
+                    version: packageData.version,
+                },
+                is_current: current_package &&
+                    current_package.name === packageData.name &&
+                    current_package.version === packageData.version,
+            })));
+
+            const make_package_current_buttons = $('.makePackageCurrent');
+            make_package_current_buttons.off('click');
+            make_package_current_buttons.on('click', (ev) => {
+                const packageData = $(ev.currentTarget).closest('tr').data('package').split('@');
+                ipc.send('change-package', { name: packageData[0], version: packageData[1] });
+            });
+
+            const delete_package_buttons = $('.deletePackage');
+            delete_package_buttons.off('click');
+            delete_package_buttons.on('click', (ev) => {
+                const packageData = $(ev.currentTarget).closest('tr').data('package').split('@');
+                ipc.send('delete-package', { name: packageData[0], version: packageData[1] });
+            });
+        });
+
+        $('#onOpenPackageFile').click(() => {
+          const packageFile = electron.remote.dialog.showOpenDialog(
+            electron.remote.getCurrentWindow(),
+            {
+              properties: ['openFile'],
+              filters: [
+                { name: 'Kiosk Package Files', extensions: ['package'] },
+              ],
+            }
+          );
+
+          if (packageFile) {
+              ipc.send('file-package', packageFile[0]);
+          }
+        });
+
+        // Finally tell the main process that the debug menu is now showing
+        ipc.send('debug-window-loaded', {});
+    })();
+</script>
+</body>
+</html>

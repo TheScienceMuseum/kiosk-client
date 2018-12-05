@@ -3,7 +3,9 @@ import _ from 'lodash';
 import fs from 'fs-jetpack';
 import axios from 'axios';
 import canConnect from 'internet-available';
-import { Config, Logger } from '.';
+
+import Config from './Config';
+import Logger from './Logger';
 
 
 class Network {
@@ -106,4 +108,4 @@ class Network {
   }
 }
 
-module.exports.Network = Network;
+export default (new Network);

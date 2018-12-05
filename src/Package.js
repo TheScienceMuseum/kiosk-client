@@ -1,6 +1,9 @@
 import fs from 'fs-jetpack';
 import tar from 'tar';
-import { Config, Logger, Network } from '.';
+
+import Config from './support/Config';
+import Logger from './support/Logger';
+import Network from './support/Network';
 
 class Package {
   constructor(name, version) {
@@ -33,7 +36,7 @@ class Package {
     return JSON.parse(fs.read(this.getPackageManifestPath()));
   }
   getMainFilePath() {
-    return `${this.getPackageFolderPath()}/${this.getManifest().main}`;
+    return `${this.getPackageFolderPath()}${this.getManifest().main}`;
   }
   extract() {
     if (!fs.exists(this.getPackageFolderPath())) {
@@ -66,4 +69,4 @@ class Package {
   }
 }
 
-module.exports.Package = Package;
+export default Package;

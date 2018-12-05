@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Kiosk Client</title>
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+
+</head>
+<body>
+<div class="flex-center position-ref full-height">
+    <div class="content">
+        <div class="title m-b-md">
+            <span id="kiosk_identifier"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-8 offset-2 text-uppercase">
+                This kiosk does not have a package assigned to it, use the identifier above to register the kiosk and
+                assign a package to it.
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    (function () {
+        const _ = require('lodash');
+        const electron = require('electron');
+        const ipc = electron.ipcRenderer;
+        let Config = {};
+
+        ipc.send('config', 'set', {screen_unattended: true});
+        ipc.send('config', 'get');
+
+        ipc.on('config', (event, type, payload) => {
+            if (type === 'update') {
+                Config = payload;
+            }
+
+            document.getElementById('kiosk_identifier').innerText = Config.identifier;
+        });
+    })();
+</script>
+</body>
+</html>
