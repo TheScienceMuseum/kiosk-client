@@ -10,6 +10,7 @@ class Package {
     this.name = name;
     this.version = parseInt(version, 10);
   }
+
   static loadFromFolder(folder) {
     const manifestPath = `${folder}/manifest.json`;
 
@@ -20,24 +21,31 @@ class Package {
 
     return false;
   }
+
   getPackageFolderPath() {
     return `${Config.get('package_storage_directory')}${this.getPackageFullName()}/`;
   }
+
   getPackageManifestPath() {
     return `${this.getPackageFolderPath()}/manifest.json`;
   }
+
   getPackageArchivePath() {
     return `${Config.get('package_storage_directory')}${this.getPackageFullName()}.package`;
   }
+
   getPackageFullName() {
     return `${this.name}_${this.version}`;
   }
+
   getManifest() {
     return JSON.parse(fs.read(this.getPackageManifestPath()));
   }
+
   getMainFilePath() {
     return `${this.getPackageFolderPath()}${this.getManifest().main}`;
   }
+
   extract() {
     if (!fs.exists(this.getPackageFolderPath())) {
       fs.dir(this.getPackageFolderPath(), { empty: true });
@@ -51,6 +59,7 @@ class Package {
       sync: true,
     });
   }
+
   download(url) {
     Logger.info(`Downloading package from ${url} to ${this.getPackageArchivePath()}`);
 
@@ -59,11 +68,13 @@ class Package {
         .then(() => {
           this.extract();
           resolve();
-        }).catch((error) => {
+        })
+        .catch((error) => {
           reject(error);
         });
     });
   }
+
   isTheSameAs(secondPackage) {
     return this.name === secondPackage.name && this.version === secondPackage.version;
   }

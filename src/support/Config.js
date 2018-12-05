@@ -31,6 +31,7 @@ class Config {
         break;
     }
   }
+
   getConfig() {
     return this.config;
   }

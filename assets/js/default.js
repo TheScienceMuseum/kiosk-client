@@ -5,7 +5,7 @@ require('../scss/default.scss');
   const ipc = electron.ipcRenderer;
   let Config = {};
 
-  ipc.send('config', 'set', {screen_unattended: true});
+  ipc.send('config', 'set', { screen_unattended: true });
   ipc.send('config', 'get');
 
   ipc.on('config', (event, type, payload) => {
