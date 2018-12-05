@@ -16,7 +16,8 @@
     "dist:production:linux": "APP_BUILD_ENV=production node set-dist-environment && electron-builder -l",
     "dist:production:windows": "APP_BUILD_ENV=production node set-dist-environment && electron-builder -w",
     "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null",
-    "asset:build": "webpack --config webpack.assets.js"
+    "asset:build": "webpack --config webpack.assets.js",
+    "asset:watch": "webpack --config webpack.assets.js --watch"
   },
   "build": {
     "appId": "com.joipolloi.clients.science-museum.kiosk-client",

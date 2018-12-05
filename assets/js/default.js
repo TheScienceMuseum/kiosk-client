@@ -14,6 +14,6 @@ require('../scss/default.scss');
       Config = payload;
     }
 
-    document.getElementById('kiosk_identifier').innerText = Config.identifier;
+    document.getElementById('kiosk-identifier').innerText = Config.identifier;
   });
 })();
