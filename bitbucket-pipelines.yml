@@ -32,13 +32,13 @@ definitions:
     artifacts:
       - dist/*.zip
 
-  staging-build-win: &staging-build-windows
-    name: staging build (windows)
+  staging-build-win: &staging-build-win
+    name: staging build (win)
     caches:
       - node
     script:
       - yarn install
-      - yarn dist:staging:windows
+      - yarn dist:staging:win
     artifacts:
       - dist/*.zip
 
@@ -52,4 +52,4 @@ pipelines:
       - parallel:
           - step: *staging-build-mac
           - step: *staging-build-linux
-          - step: *staging-build-windows
+          - step: *staging-build-win
