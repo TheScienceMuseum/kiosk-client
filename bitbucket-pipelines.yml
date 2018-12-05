@@ -8,14 +8,11 @@ pipelines:
           - node
           script:
           - dpkg --add-architecture i386
-          - wget -nc https://download.opensuse.org/repositories/Emulators:/Wine:/Debian/Ubuntu_18.10_standard/Release.key
+          - wget -nc https://dl.winehq.org/wine-builds/Release.key
           - apt-key add Release.key
-          - apt-get install --no-install-recommends -y apt-transport-https
-          - echo 'deb https://download.opensuse.org/repositories/Emulators:/Wine:/Debian/Ubuntu_18.10_standard ./' >> /etc/apt/sources.list
-          - apt-get update
-          - apt-get install --no-install-recommends -y libopenjp2-tools winehq-stable
-          - yarn install
-          - yarn dist:all:staging
+          - apt-get update && apt-get install --no-install-recommends -y apt-transport-https && apt-get clean
+          - echo 'deb https://dl.winehq.org/wine-builds/debian/ stretch main' >> /etc/apt/sources.list
+          - apt-get update && apt-get install --no-install-recommends -y libopenjp2-tools winehq-stable && apt-get clean
           artifacts:
           - dist/kiosk-client-*-mac.zip
           - dist/kiosk-client Setup *.exe
