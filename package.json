@@ -8,9 +8,9 @@
     "compile": "yarn asset:build && electron-webpack",
     "dist": "yarn compile && electron-builder",
     "dist:all:staging": "yarn compile && APP_BUILD_ENV=staging node set-dist-environment && electron-builder -mwl",
-    "dist:all:staging:mac": "yarn compile && APP_BUILD_ENV=staging node set-dist-environment && electron-builder -m",
-    "dist:all:staging:linux": "yarn compile && APP_BUILD_ENV=staging node set-dist-environment && electron-builder -l",
-    "dist:all:staging:windows": "yarn compile && APP_BUILD_ENV=staging node set-dist-environment && electron-builder -w",
+    "dist:all:staging:mac": "APP_BUILD_ENV=staging node set-dist-environment && electron-builder -m",
+    "dist:all:staging:linux": "APP_BUILD_ENV=staging node set-dist-environment && electron-builder -l",
+    "dist:all:staging:windows": "APP_BUILD_ENV=staging node set-dist-environment && electron-builder -w",
     "dist:all:production": "yarn compile && APP_BUILD_ENV=production node set-dist-environment &&electron-builder -mwl",
     "dist:dir": "yarn dist --dir -c.compression=store -c.mac.identity=null",
     "asset:build": "webpack --config webpack.assets.js"

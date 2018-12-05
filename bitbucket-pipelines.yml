@@ -7,9 +7,10 @@ definitions:
       - node
     script:
       - yarn install
-      - yarn asset:build
+      - yarn compile
     artifacts:
       - static/assets/**
+      - dist/**
 
   staging-build-mac: &staging-build-mac
     name: staging build (mac)
@@ -31,13 +32,13 @@ definitions:
     artifacts:
       - dist/*.zip
 
-  staging-build-win: &staging-build-win
-    name: staging build (win)
+  staging-build-win: &staging-build-windows
+    name: staging build (windows)
     caches:
       - node
     script:
       - yarn install
-      - yarn dist:all:staging:win
+      - yarn dist:all:staging:windows
     artifacts:
       - dist/*.zip
 
@@ -51,4 +52,4 @@ pipelines:
       - parallel:
           - step: *staging-build-mac
           - step: *staging-build-linux
-          - step: *staging-build-win
+          - step: *staging-build-windows
