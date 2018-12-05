@@ -1,13 +1,14 @@
-image: node:10.12
+image: node:11
 pipelines:
-  default:
-  - step:
-      name: build application
-      caches:
-      - node
-      script:
-      - apt-get update && apt-get install -yq fakeroot
-      - yarn install
-      - yarn make
-      artifacts:
-        - out/make/*.zip
+  branches:
+    develop:
+      - step:
+        name: build application for staging
+        caches:
+        - node
+        script:
+        - yarn install
+        - yarn make
+        artifacts:
+        - dist/kiosk-client-*-mac.zip
+        - dist/kiosk-client Setup *.exe
