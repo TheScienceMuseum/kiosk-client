@@ -10,6 +10,7 @@ pipelines:
           - dpkg --add-architecture i386
           - wget -nc https://download.opensuse.org/repositories/Emulators:/Wine:/Debian/Ubuntu_18.10_standard/Release.key
           - apt-key add Release.key
+          - apt-get install --no-install-recommends -y apt-transport-https
           - echo 'deb https://download.opensuse.org/repositories/Emulators:/Wine:/Debian/Ubuntu_18.10_standard ./' >> /etc/apt/sources.list
           - apt-get update
           - apt-get install --no-install-recommends -y libopenjp2-tools winehq-stable
