@@ -7,6 +7,12 @@ pipelines:
           caches:
           - node
           script:
+          - dpkg --add-architecture i386
+          - wget -nc https://download.opensuse.org/repositories/Emulators:/Wine:/Debian/Ubuntu_18.10_standard/Release.key
+          - apt-key add Release.key
+          - apt-add-repository 'deb https://download.opensuse.org/repositories/Emulators:/Wine:/Debian/Ubuntu_18.10_standard ./'
+          - apt-get update
+          - apt-get install --no-install-recommends -y libopenjp2-tools winehq-stable
           - yarn install
           - yarn dist:all:staging
           artifacts:
