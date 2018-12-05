@@ -13,33 +13,33 @@ definitions:
 
   staging-build-mac: &staging-build-mac
     name: staging build (mac)
-      caches:
-        - node
-      script:
-        - yarn install
-        - yarn dist:all:staging:mac
-      artifacts:
-        - dist/*.zip
+    caches:
+      - node
+    script:
+      - yarn install
+      - yarn dist:all:staging:mac
+    artifacts:
+      - dist/*.zip
 
   staging-build-linux: &staging-build-linux
     name: staging build (linux)
-      caches:
-        - node
-      script:
-        - yarn install
-        - yarn dist:all:staging:linux
-      artifacts:
-        - dist/*.zip
+    caches:
+      - node
+    script:
+      - yarn install
+      - yarn dist:all:staging:linux
+    artifacts:
+      - dist/*.zip
 
   staging-build-win: &staging-build-win
     name: staging build (win)
-      caches:
-        - node
-      script:
-        - yarn install
-        - yarn dist:all:staging:win
-      artifacts:
-        - dist/*.zip
+    caches:
+      - node
+    script:
+      - yarn install
+      - yarn dist:all:staging:win
+    artifacts:
+      - dist/*.zip
 
 pipelines:
   default:
