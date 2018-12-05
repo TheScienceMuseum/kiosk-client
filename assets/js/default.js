@@ -1,7 +1,6 @@
 require('../scss/default.scss');
 
 (function () {
-  const _ = require('lodash');
   const electron = require('electron');
   const ipc = electron.ipcRenderer;
   let Config = {};
