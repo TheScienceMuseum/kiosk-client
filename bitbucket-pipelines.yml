@@ -1,13 +1,29 @@
 image: acodeninja/electron-builder:latest
+definitions:
+
+  build-assets: &build-assets
+    name: build assets
+    caches:
+      - node
+    script:
+      - yarn install
+      - yarn asset:build
+    artifacts:
+      - static/assets/**
+
 pipelines:
+  default:
+    - step: *build-assets
+
   branches:
     develop:
+      - step: *build-assets
       - step:
-          name: build application for staging
+          name: staging build
           caches:
-          - node
+            - node
           script:
-          - yarn install
-          - yarn dist:all:staging
+            - yarn install
+            - yarn dist:all:staging
           artifacts:
-          - dist/*.zip
+            - dist/*.zip
