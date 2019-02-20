@@ -108,7 +108,7 @@ class Kiosk {
     Logger.info('Kiosk Health Check Starting');
     Network.healthCheck()
       .then((response) => {
-        const packageData = _.get(response, 'data.data.package');
+        const packageData = _.get(response, 'data.data.assigned_package_version');
         Config.set('package_overridden', _.get(response, 'data.data.manually_set'));
 
         if (
