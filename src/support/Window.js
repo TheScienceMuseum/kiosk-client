@@ -89,6 +89,10 @@ class Window {
       }
     });
 
+    ipcMain.on('interface-error', (event, errorPayload) => {
+      Logger.error(`Interface error: ${JSON.stringify(errorPayload)}`);
+    });
+
     return mainWindow;
   }
 }
