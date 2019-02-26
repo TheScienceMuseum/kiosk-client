@@ -66,13 +66,18 @@ class PackageManager {
 
     console.log('deleting package:', index);
 
-    if (index) {
+    if (index !== undefined) {
       const removed = this.packages.splice(index, 1);
 
       if (removed) {
         removed.forEach((removingPackage) => {
-          fs.remove(removingPackage.getPackageFolderPath());
-          fs.remove(removingPackage.getPackageArchivePath());
+          if (fs.exists(removingPackage.getPackageFolderPath())) {
+            fs.remove(removingPackage.getPackageFolderPath());
+          }
+
+          if (fs.exists(removingPackage.getPackageArchivePath())) {
+            fs.remove(removingPackage.getPackageArchivePath());
+          }
         });
       }
     }
