@@ -105,7 +105,7 @@ class Kiosk {
   }
 
   healthCheck() {
-    Logger.info('Kiosk Health Check Starting');
+    Logger.debug('Kiosk Health Check Starting');
     Network.healthCheck()
       .then((response) => {
         const packageData = _.get(response, 'data.data.assigned_package_version');
