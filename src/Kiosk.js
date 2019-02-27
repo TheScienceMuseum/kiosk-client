@@ -118,7 +118,7 @@ class Kiosk {
           _.has(packageData, 'path')
         ) {
           const newPackage = new Package(
-            _.get(packageData, 'name'),
+            _.get(packageData, 'slug'),
             _.get(packageData, 'version'),
           );
 

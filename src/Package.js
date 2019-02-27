@@ -6,8 +6,8 @@ import Logger from './support/Logger';
 import Network from './support/Network';
 
 class Package {
-  constructor(name, version) {
-    this.name = name;
+  constructor(slug, version) {
+    this.slug = slug;
     this.version = parseInt(version, 10);
   }
 
@@ -35,7 +35,7 @@ class Package {
   }
 
   getPackageFullName() {
-    return `${this.name}_${this.version}`;
+    return `${this.slug}_${this.version}`;
   }
 
   getManifest() {
@@ -76,7 +76,7 @@ class Package {
   }
 
   isTheSameAs(secondPackage) {
-    return this.name === secondPackage.name && this.version === secondPackage.version;
+    return this.slug === secondPackage.slug && this.version === secondPackage.version;
   }
 }
 

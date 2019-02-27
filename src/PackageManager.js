@@ -83,13 +83,13 @@ class PackageManager {
     }
   }
 
-  getNewPackage(name, version) {
-    const newPackage = new Package(name, version);
+  getNewPackage(slug, version) {
+    const newPackage = new Package(slug, version);
 
     return newPackage.download()
       .then(() => {
         this.packages.push(newPackage);
-        Config.set('current_package_name', name);
+        Config.set('current_package_name', slug);
         Config.set('current_package_version', version);
       });
   }
@@ -146,16 +146,16 @@ class PackageManager {
     });
   }
 
-  setNewPackage(name, version) {
-    if (this.getPackageByNameAndVersion(name, version)) {
-      Logger.info(`Setting package ${name} at version ${version}`);
+  setNewPackage(slug, version) {
+    if (this.getPackageByNameAndVersion(slug, version)) {
+      Logger.info(`Setting package ${slug} at version ${version}`);
 
-      Config.set('current_package_name', name);
+      Config.set('current_package_name', slug);
       Config.set('current_package_version', version);
 
       return true;
     }
-    Logger.error(`Failed setting package ${name} at version ${version}`);
+    Logger.error(`Failed setting package ${slug} at version ${version}`);
     return false;
   }
 }
