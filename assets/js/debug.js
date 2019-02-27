@@ -45,11 +45,11 @@ require('../scss/debug.scss');
 
     packages_table.append(_.map(packages, (packageData) => templates.package_list_row_template({
       entry: {
-        name: packageData.name,
+        slug: packageData.slug,
         version: packageData.version,
       },
       is_current: current_package &&
-        current_package.name === packageData.name &&
+        current_package.slug === packageData.slug &&
         current_package.version === packageData.version,
     })));
 
@@ -60,7 +60,7 @@ require('../scss/debug.scss');
         .closest('tr')
         .data('package')
         .split('@');
-      ipc.send('change-package', { name: packageData[0], version: packageData[1] });
+      ipc.send('change-package', { slug: packageData[0], version: packageData[1] });
     });
 
     const delete_package_buttons = $('.deletePackage');
@@ -70,7 +70,7 @@ require('../scss/debug.scss');
         .closest('tr')
         .data('package')
         .split('@');
-      ipc.send('delete-package', { name: packageData[0], version: packageData[1] });
+      ipc.send('delete-package', { slug: packageData[0], version: packageData[1] });
     });
   });
 

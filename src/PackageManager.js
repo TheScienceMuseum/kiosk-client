@@ -47,12 +47,12 @@ class PackageManager {
     return null;
   }
 
-  getPackageByNameAndVersion(name, version) {
+  getPackageByNameAndVersion(slug, version) {
     const parsedVersion = parseInt(version, 10);
 
     return _.find(
       this.packages,
-      packageObject => packageObject.name === name && packageObject.version === parsedVersion,
+      packageObject => packageObject.slug === slug && packageObject.version === parsedVersion,
     );
   }
 
