@@ -1,0 +1,4 @@
+Kiosk Client Installer
+----------------------
+
+The Kiosk Client has been installed, it can be accessed from Applications.

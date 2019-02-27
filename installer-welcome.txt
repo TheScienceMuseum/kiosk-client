@@ -1,0 +1,4 @@
+Kiosk Client Installer
+----------------------
+
+This package will install the Kiosk Client on this computer.

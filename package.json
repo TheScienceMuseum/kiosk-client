@@ -7,11 +7,11 @@
     "dev": "yarn asset:build && electron-webpack dev",
     "compile": "yarn asset:build && electron-webpack",
     "dist": "yarn compile && electron-builder",
-    "dist:staging:all": "yarn compile && APP_BUILD_ENV=staging node set-dist-environment && APP_BUILD_ENV=staging electron-builder -mwl",
+    "dist:staging:all": "yarn compile && yarn dist:staging:mac && yarn dist:staging:linux && yarn dist:staging:win",
     "dist:staging:mac": "APP_BUILD_ENV=staging node set-dist-environment && APP_BUILD_ENV=staging electron-builder -m",
     "dist:staging:linux": "APP_BUILD_ENV=staging node set-dist-environment && APP_BUILD_ENV=staging electron-builder -l",
     "dist:staging:win": "APP_BUILD_ENV=staging node set-dist-environment && APP_BUILD_ENV=staging electron-builder -w",
-    "dist:production:all": "yarn compile && APP_BUILD_ENV=production node set-dist-environment && APP_BUILD_ENV=production electron-builder -mwl",
+    "dist:production:all": "yarn compile && yarn dist:production:mac && yarn dist:production:linux && yarn dist:production:win",
     "dist:production:mac": "APP_BUILD_ENV=production node set-dist-environment && APP_BUILD_ENV=production electron-builder -m",
     "dist:production:linux": "APP_BUILD_ENV=production node set-dist-environment && APP_BUILD_ENV=production electron-builder -l",
     "dist:production:win": "APP_BUILD_ENV=production node set-dist-environment && APP_BUILD_ENV=production electron-builder -w",
@@ -23,7 +23,13 @@
     "appId": "com.joipolloi.clients.science-museum.kiosk-client",
     "mac": {
       "artifactName": "${productName}-${os}-${version}-${env.APP_BUILD_ENV}.${ext}",
-      "target": "zip"
+      "target": "pkg"
+    },
+    "pkg": {
+      "installLocation": "/Applications",
+      "allowAnywhere": false,
+      "welcome": "./installer-welcome.txt",
+      "conclusion": "./installer-conclusion.txt"
     },
     "win": {
       "artifactName": "${productName}-${os}-${version}-${env.APP_BUILD_ENV}.${ext}",
