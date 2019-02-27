@@ -123,7 +123,7 @@ class Kiosk {
           );
 
           const foundPackage = this.packageManager.getPackageByNameAndVersion(
-            newPackage.name,
+            newPackage.slug,
             newPackage.version,
           );
 
