@@ -72,7 +72,7 @@ class Network {
     const uri = `${Config.get('package_server_api')}kiosk/${type}`;
     const requestData = Network.buildRequestData(type, data);
 
-    Logger.debug(`sending request to ${uri} with body ${JSON.stringify(requestData)}`);
+    Logger.debug(`sending request to ${uri}}`, {request: requestData});
 
     return new Promise(((resolve, reject) => {
       this.hasConnection()
@@ -82,7 +82,7 @@ class Network {
               if (type === 'health-check') {
                 Logger.trimLogs('info');
               }
-              Logger.debug(`request to ${uri} succeeded with response ${JSON.stringify(response.data)}`);
+              Logger.debug(`request to ${uri} succeeded`, {response: response.data});
               resolve(response);
             })
             .catch((error) => {
