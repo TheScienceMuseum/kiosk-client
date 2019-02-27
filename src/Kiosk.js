@@ -159,9 +159,9 @@ class Kiosk {
       canUpdate = false;
     }
 
-    if (canUpdate && this.packageManager.setNewPackage(newPackage.name, newPackage.version)) {
+    if (canUpdate && this.packageManager.setNewPackage(newPackage.slug, newPackage.version)) {
       this.displayDefault();
-      Logger.info(`Display updated: loaded package ${newPackage.name} version ${newPackage.version}`);
+      Logger.info(`Display updated: loaded package ${newPackage.slug} version ${newPackage.version}`);
     }
   }
 }
