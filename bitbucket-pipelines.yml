@@ -19,6 +19,9 @@ definitions:
     script:
       - yarn install
       - yarn dist:staging:mac
+      - cd dist
+      - ARCHIVE_NAME=`echo *.pkg | sed "s/.pkg/.zip/"`
+      - zip $ARCHIVE_NAME *.pkg
     artifacts:
       - dist/*.zip
 
