@@ -12,19 +12,6 @@ definitions:
       - static/assets/**
       - dist/**
 
-  staging-build-mac: &staging-build-mac
-    name: staging build (mac)
-    caches:
-      - node
-    script:
-      - yarn install
-      - yarn dist:staging:mac
-      - cd dist
-      - ARCHIVE_NAME=`echo *.pkg | sed "s/.pkg/.zip/"`
-      - zip $ARCHIVE_NAME *.pkg
-    artifacts:
-      - dist/*.zip
-
   staging-build-linux: &staging-build-linux
     name: staging build (linux)
     caches:
@@ -53,7 +40,6 @@ pipelines:
     develop:
       - step: *build-assets
       - parallel:
-          - step: *staging-build-mac
           - step: *staging-build-linux
           - step: *staging-build-win
       - step:
