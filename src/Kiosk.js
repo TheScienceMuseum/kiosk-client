@@ -14,7 +14,7 @@ class Kiosk {
   constructor() {
     this.window = new Window('main');
     this.packageManager = new PackageManager();
-
+    this.downloading = false;
     this.window_debug = null;
     this.currently_displayed_package = this.packageManager.getCurrentPackage();
 
@@ -130,20 +130,24 @@ class Kiosk {
           if (foundPackage) {
             this.updateDisplayedPackage(foundPackage);
           } else {
+            if(!this.downloading)
+            {
+            this.downloading = true;
             newPackage.download(_.get(packageData, 'path'))
               .then(() => {
                 this.updateDisplayedPackage(newPackage);
               });
+            }
           }
         }
       });
   }
 
   updateDisplayedPackage(newPackage) {
+    this.downloading = false;
     this.packageManager.rebuildPackageCache();
     const currentPackage = this.packageManager.getCurrentPackage();
     let canUpdate = true;
-
     if (currentPackage && currentPackage.isTheSameAs(newPackage)) {
       Logger.info('Display not updated: current package is up to date');
       canUpdate = false;
