@@ -10,7 +10,7 @@ class Config {
     this.config.set('client_version', app.getVersion());
     this.config.set('package_storage_directory', `${app.getPath('userData')}/packages/`);
     this.config.set('logs_debug', `${app.getPath('userData')}/debug.log`);
-    this.config.set('environment', 'development');
+    this.config.set('environment', 'production');
 
     if (!this.config.get('identifier')) this.config.set('identifier', hri.random());
     if (!this.config.get('current_package_name')) this.config.set('current_package_name', null);
@@ -26,7 +26,7 @@ class Config {
         this.config.set('package_server_api', 'https://kms.scimus.clients.joipolloi.com/api/');
         break;
       default:
-        this.config.set('health_check_timeout', (5 * 60000)); // <minutes> * <milliseconds multiplier>
+        this.config.set('health_check_timeout', (10 * 60000)); // <minutes> * <milliseconds multiplier>
         this.config.set('package_server_api', 'http://ec2-18-191-78-6.us-east-2.compute.amazonaws.com/api/');
         break;
     }
