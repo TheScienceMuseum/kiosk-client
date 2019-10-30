@@ -14,5 +14,7 @@ require('../scss/default.scss');
     }
 
     document.getElementById('kiosk-identifier').innerText = Config.identifier;
+    document.getElementById('client-version').innerText = Config.client_version;
+    document.getElementById('client-environment').innerText = Config.environment;
   });
 })();
