@@ -56,12 +56,12 @@ class PackageManager {
     );
   }
 
-  deletePackageByNameAndVersion(name, version) {
+  deletePackageByNameAndVersion(slug, version) {
     const parsedVersion = parseInt(version, 10);
 
     const index = _.findIndex(
       this.packages,
-      packageObject => packageObject.name === name && packageObject.version === parsedVersion,
+      packageObject => packageObject.slug === slug && packageObject.version === parsedVersion,
     );
 
     console.log('deleting package:', index);
