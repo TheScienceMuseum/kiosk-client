@@ -4,7 +4,7 @@ S3_BUCKET="joipolloi-scimus-builds"
 AWS_PROFILE="scimus"
 ENVIRONMENT=$1
 
-if [[ -z "$ENVIRONMENT" ]]; then ENVIRONMENT='staging'; fi
+if [[ -z "$ENVIRONMENT" ]]; then ENVIRONMENT='production'; fi
 
 
 echo "Building for OSX"
