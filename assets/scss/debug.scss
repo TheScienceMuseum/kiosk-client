@@ -1,7 +1,10 @@
 @import "~bootstrap/scss/bootstrap";
 
+* {
+    cursor: default !important;
+}
+
 html, body {
-    cursor: default;
     overflow: hidden;
 }
 
