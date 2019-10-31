@@ -77,6 +77,12 @@ class Window {
       Logger.debug(`Loaded devtools for the window ${this.name}`);
     }
 
+    // Force the window to hide the cursor on ready
+    mainWindow.webContents.on('dom-ready', (event)=> {
+      let css = 'html, body { cursor: none !important; }';
+      mainWindow.webContents.insertCSS(css);
+    });
+
     ipcMain.on('config', (event, type, payload) => {
       if (type === 'set') {
         _.each(payload, (value, param) => {
