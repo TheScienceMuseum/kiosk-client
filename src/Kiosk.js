@@ -75,7 +75,7 @@ class Kiosk {
     });
 
     ipcMain.on('change-package', (event, packageData) => {
-      this.packageManager.setNewPackage(packageData.name, packageData.version);
+      this.packageManager.setNewPackage(packageData.slug, packageData.version);
       Config.set('package_overridden', (Date.now() / 1000).toFixed(0));
       this.displayDefault();
       event.sender.send('packages-update', this.packageManager.packages, this.packageManager.getCurrentPackage());
