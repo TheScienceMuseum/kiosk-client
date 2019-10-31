@@ -70,7 +70,7 @@ class Kiosk {
 
     ipcMain.on('delete-package', (event, packageData) => {
       console.log('deleting package: ', packageData);
-      this.packageManager.deletePackageByNameAndVersion(packageData.name, packageData.version);
+      this.packageManager.deletePackageByNameAndVersion(packageData.slug, packageData.version);
       event.sender.send('packages-update', this.packageManager.packages, this.packageManager.getCurrentPackage());
     });
 
