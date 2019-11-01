@@ -79,7 +79,7 @@ class Window {
 
     // Force the window to hide the cursor on ready
     mainWindow.webContents.on('dom-ready', (event)=> {
-      let css = '* { cursor: none !important}';
+      let css = '* { cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=), none !important;}';
       mainWindow.webContents.insertCSS(css);
     });
 
