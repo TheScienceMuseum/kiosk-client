@@ -79,7 +79,7 @@ class Window {
 
     // Force the window to hide the cursor on ready
     mainWindow.webContents.on('dom-ready', (event)=> {
-      let css = 'html, body { cursor: none !important; }';
+      let css = '* { cursor: none !important}';
       mainWindow.webContents.insertCSS(css);
     });
 
