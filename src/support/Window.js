@@ -53,7 +53,9 @@ class Window {
       fullscreen: true,
       webPreferences: {
         webSecurity: false
-      }
+      },
+      kiosk: true,
+
     };
 
     if (isDevelopmentEnvironment || !this.fullscreen) {
@@ -67,7 +69,6 @@ class Window {
     }
 
     const mainWindow = new BrowserWindow(windowOptions);
-
     Logger.debug(`Created a new window with settings: ${JSON.stringify(windowOptions)}`);
 
     if (isDevelopmentEnvironment) {
