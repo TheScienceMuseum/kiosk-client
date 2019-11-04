@@ -16,7 +16,6 @@ class Kiosk {
     this.packageManager = new PackageManager();
     this.window_debug = null;
     this.currently_displayed_package = this.packageManager.getCurrentPackage();
-
     Logger.info(`Kiosk started. API Endpoint: ${Config.get('package_server_api')}, Time between checks: ${(Config.get('health_check_timeout') / 60000)} minutes`);
   }
 
@@ -38,6 +37,11 @@ class Kiosk {
     }
   }
 
+  closeApplication()
+  {
+    app.exit(0);
+  }
+
   displayPackage(newPackage) {
     Logger.info(`Displaying package: ${newPackage.getPackageFullName()}`);
     this.window.update(newPackage.getMainFilePath());
@@ -50,7 +54,7 @@ class Kiosk {
 
   displayDebugScreen() {
     if (this.window_debug) {
-      this.window_debug.show();
+        this.window_debug.destroy();
       return;
     }
 

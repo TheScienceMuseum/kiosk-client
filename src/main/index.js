@@ -12,6 +12,10 @@ const onApplicationStart = () => {
     kiosk.displayDebugScreen();
   });
 
+  globalShortcut.register('CommandOrControl+Q', () => {
+    kiosk.closeApplication();
+  });
+
   const kioskAppLauncher = new AutoLaunch({
     name: 'Kiosk Client',
     path: app.getPath('exe'),
