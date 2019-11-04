@@ -74,6 +74,11 @@ require('../scss/debug.scss');
     });
   });
 
+  $('#onCloseApp')
+    .click(() => {
+      electron.remote.app.exit(0);
+    });
+
   $('#onOpenPackageFile')
     .click(() => {
       const packageFile = electron.remote.dialog.showOpenDialog(
