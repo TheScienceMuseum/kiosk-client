@@ -54,7 +54,6 @@ class Window {
       webPreferences: {
         webSecurity: false
       },
-      transparent: true,
       frame: false,
       kiosk: true
     };
