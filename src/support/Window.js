@@ -54,8 +54,9 @@ class Window {
       webPreferences: {
         webSecurity: false
       },
-      kiosk: true,
-
+      transparent: true,
+      frame: false,
+      kiosk: true
     };
 
     if (isDevelopmentEnvironment || !this.fullscreen) {
@@ -80,7 +81,7 @@ class Window {
 
     // Force the window to hide the cursor on ready
     mainWindow.webContents.on('dom-ready', (event)=> {
-      let css = '* { cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=), none !important;}';
+      let css = ' * { cursor: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=), none !important; user-select: none !important; -webkit-user-select: none;-moz-user-select: none;-ms-user-select: none;}';
       mainWindow.webContents.insertCSS(css);
     });
 
