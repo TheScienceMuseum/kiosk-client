@@ -13,15 +13,14 @@ import Package from './Package';
 class Kiosk {
   constructor() {
     this.window = new Window('main');
-    this.packageManager = new PackageManager();
+    this.packageManager = new PackageManager(this.window);
     this.window_debug = null;
     this.currently_displayed_package = this.packageManager.getCurrentPackage();
+    this.busy = false;
     Logger.info(`Kiosk started. API Endpoint: ${Config.get('package_server_api')}, Time between checks: ${(Config.get('health_check_timeout') / 60000)} minutes`);
   }
 
   start() {
-    this.healthCheck();
-
     setInterval(this.healthCheck.bind(this), Config.get('health_check_timeout'));
 
     this.displayDefault();
@@ -108,6 +107,7 @@ class Kiosk {
   }
 
   healthCheck() {
+    if(this.busy) return;
     Logger.debug('Kiosk Health Check Starting');
     Network.healthCheck()
       .then((response) => {
@@ -120,33 +120,32 @@ class Kiosk {
           _.has(packageData, 'version') &&
           _.has(packageData, 'path')
         ) {
-          const newPackage = new Package(
+          this.newPackage = new Package(
             _.get(packageData, 'slug'),
             _.get(packageData, 'version'),
+            this
           );
 
           const foundPackage = this.packageManager.getPackageByNameAndVersion(
-            newPackage.slug,
-            newPackage.version,
+            this.newPackage.slug,
+            this.newPackage.version,
           );
 
           if (foundPackage) {
             this.updateDisplayedPackage(foundPackage);
           } else {
-            newPackage.download(_.get(packageData, 'path'))
-            .then(() => {
-              this.updateDisplayedPackage(newPackage);
-            });
+            this.busy = true;
+            this.newPackage.download(_.get(packageData, 'path'));
           }
         }
       });
   }
 
-  updateDisplayedPackage(newPackage) {
+  updateDisplayedPackage() {
     this.packageManager.rebuildPackageCache();
     const currentPackage = this.packageManager.getCurrentPackage();
     let canUpdate = true;
-    if (currentPackage && currentPackage.isTheSameAs(newPackage)) {
+    if (currentPackage && currentPackage.isTheSameAs(this.newPackage)) {
       Logger.info('Display not updated: current package is up to date');
       canUpdate = false;
     }
@@ -161,11 +160,14 @@ class Kiosk {
       canUpdate = false;
     }
 
-    if (canUpdate && this.packageManager.setNewPackage(newPackage.slug, newPackage.version)) {
+    if (canUpdate && this.packageManager.setNewPackage(this.newPackage.slug, this.newPackage.version)) {
       this.displayDefault();
-      Logger.info(`Display updated: loaded package ${newPackage.slug} version ${newPackage.version}`);
+      Logger.info(`Display updated: loaded package ${this.newPackage.slug} version ${this.newPackage.version}`);
     }
+
+    this.busy = false;
   }
+
 }
 
 export default Kiosk;

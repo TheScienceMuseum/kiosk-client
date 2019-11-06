@@ -46,26 +46,26 @@ class Network {
         });
       }
     }
-
     return requestData;
   }
 
-  downloadFile(url, destination) {
-    return this.hasConnection()
-      .then(() => {
-        axios.request({
-          responseType: 'arraybuffer',
-          url,
-          method: 'post',
-          data: Network.buildRequestData(),
-        })
-          .then((result) => {
-            fs.write(destination, result.data);
-          })
-          .catch((error) => {
-            Logger.error(`failed to download file from ${url} due to error: ${error}`);
-          });
-      });
+  downloadFile(url, destination, packageObj) {
+    this.hasConnection().then(() => {
+      axios.request({
+        responseType: 'stream',
+        url,
+        method: 'post',
+        data: Network.buildRequestData(),
+      }).then((result) => {
+        const stream = fs.createWriteStream(destination);
+        stream.on('finish', function() {
+          //fire event
+          packageObj.extractPackage();
+        });
+
+        result.data.pipe(stream);
+      })
+    })
   }
 
   sendRequest(type, data = {}) {
