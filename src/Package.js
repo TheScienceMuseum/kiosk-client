@@ -6,9 +6,10 @@ import Logger from './support/Logger';
 import Network from './support/Network';
 
 class Package {
-  constructor(slug, version) {
+  constructor(slug, version, kiosk) {
     this.slug = slug;
     this.version = parseInt(version, 10);
+    this.kiosk = kiosk;
   }
 
   static loadFromFolder(folder) {
@@ -16,7 +17,7 @@ class Package {
 
     if (fs.exists(manifestPath)) {
       const manifest = JSON.parse(fs.read(manifestPath));
-      return new Package(manifest.name, parseInt(manifest.version, 10));
+      return new Package(manifest.name, parseInt(manifest.version, 10),this.window);
     }
 
     return false;
@@ -60,19 +61,15 @@ class Package {
     });
   }
 
+  extractPackage() {
+    this.extract();
+    this.kiosk.updateDisplayedPackage();
+  }
+
   download(url) {
     Logger.info(`Downloading package from ${url} to ${this.getPackageArchivePath()}`);
 
-    return new Promise((resolve, reject) => {
-      Network.downloadFile(url, this.getPackageArchivePath())
-        .then(() => {
-          this.extract();
-          resolve();
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+    Network.downloadFile(url, this.getPackageArchivePath(), this);
   }
 
   isTheSameAs(secondPackage) {

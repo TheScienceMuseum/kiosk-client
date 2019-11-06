@@ -10,7 +10,8 @@ import Logger from './support/Logger';
 import Package from './Package';
 
 class PackageManager {
-  constructor() {
+  constructor(window) {
+    this.window = window;
     this.rebuildPackageCache();
   }
 
@@ -84,7 +85,7 @@ class PackageManager {
   }
 
   getNewPackage(slug, version) {
-    const newPackage = new Package(slug, version);
+    const newPackage = new Package(slug, version, this.window);
 
     return newPackage.download()
       .then(() => {
