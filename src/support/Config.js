@@ -22,11 +22,11 @@ class Config {
         this.config.set('package_server_api', 'http://kiosk-manager.test/api/');
         break;
       case 'staging':
-        this.config.set('health_check_timeout', 60000); // <minutes> * <milliseconds multiplier>
+        this.config.set('health_check_timeout', (10 * 60000)); // <minutes> * <milliseconds multiplier>
         this.config.set('package_server_api', 'https://kms.scimus.clients.joipolloi.com/api/');
         break;
       default:
-        this.config.set('health_check_timeout', (60000)); // <minutes> * <milliseconds multiplier>
+        this.config.set('health_check_timeout', (10 * 60000)); // <minutes> * <milliseconds multiplier>
         //this.config.set('package_server_api', 'http://ec2-18-191-78-6.us-east-2.compute.amazonaws.com/api/');
         this.config.set('package_server_api', 'https://kms.scimus.clients.joipolloi.com/api/');
         break;
